@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #lista .done {
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Lista de Tarefas</h1>
+  <button onclick="setFilter({done: null})">todas</button>
+  <button onclick="setFilter({done: false})">abertas</button>
+  <button onclick="setFilter({done: true})">concluídas</button>
+  <button onclick="cleanAllDone()">limpar concluídas</button>
+  <ul id="lista"></ul>
+  <form onsubmit="return addTask()">
+    <input id="title"><button type="submit">adicionar</button>
+  </form>
+  <script>
+    // estado da aplicação
+    const state = {
+      tasks: [
+        { title: "Aprender HTML", done: true },
+        { title: "Aprender CSS", done: false },
+        { title: "Aprender JS", done: false },
+      ],
+      filter: {
+        done: null
+      }
+    }
+
+    // alteradores de estado da aplicação
+    function toggle(taskIndex) {
+      state.tasks[taskIndex].done = !state.tasks[taskIndex].done
+      render()
+    }
+
+    function addTask() {
+      const input = document.getElementById("title")
+      const title = input.value
+      if (!title.trim()) return false
+      state.tasks.push({ title, done: false })
+      input.value = ""
+      render()
+      return false
+    }
+
+    function deleteTask(taskIndex) {
+      state.tasks = state.tasks.filter((t, index) => index !== taskIndex)
+      render()
+    }
+
+    function cleanAllDone() {
+      state.tasks = state.tasks.filter(t => !t.done)
+      render()
+    }
+
+    function setFilter(filter) {
+      state.filter = filter
+      render()
+    }
+
+
+    // jogar o estado da aplicação na tela
+    function render() {
+      const ul = document.getElementById("lista")
+      ul.innerHTML = state.tasks.filter(t => state.filter.done === null || state.filter.done === t.done).map((t, index) => `
+        <li class="${t.done ? 'done' : ''}">
+          <span onclick="toggle(${index})">${t.title}</span> 
+          <button onclick="deleteTask(${index})">X</button>
+        </li>
+      `).join('')
+    }
+
+
+    // iniciar
+    render()
+  </script>
+</body>
+
+</html>
