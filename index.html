@@ -21,15 +21,17 @@
   <button onclick="cleanAllDone()">limpar concluídas</button>
   <ul id="lista"></ul>
   <form onsubmit="return addTask()">
-    <input id="title"><button type="submit">adicionar</button>
+    <input id="title" placeholder="title"><br>
+    <textarea id="description" placeholder="description"></textarea><br>
+    <button type="submit">adicionar</button>
   </form>
   <script>
     // estado da aplicação
     const state = {
       tasks: [
-        { title: "Aprender HTML", done: true },
-        { title: "Aprender CSS", done: false },
-        { title: "Aprender JS", done: false },
+        { title: "Aprender HTML", description: "teste A", done: true },
+        { title: "Aprender CSS", description: "Outra coisa", done: false },
+        { title: "Aprender JS", description: "Algo aqui", done: false },
       ],
       filter: {
         done: null
@@ -44,10 +46,13 @@
 
     function addTask() {
       const input = document.getElementById("title")
+      const textarea = document.getElementById("description")
       const title = input.value
+      const description = description.value
       if (!title.trim()) return false
-      state.tasks.push({ title, done: false })
+      state.tasks.push({ title, description, done: false })
       input.value = ""
+      description.value = ""
       render()
       return false
     }
@@ -73,7 +78,7 @@
       const ul = document.getElementById("lista")
       ul.innerHTML = state.tasks.filter(t => state.filter.done === null || state.filter.done === t.done).map((t, index) => `
         <li class="${t.done ? 'done' : ''}">
-          <span onclick="toggle(${index})">${t.title}</span> 
+          <span onclick="toggle(${index})" title="${t.description}">${t.title}</span> 
           <button onclick="deleteTask(${index})">X</button>
         </li>
       `).join('')
